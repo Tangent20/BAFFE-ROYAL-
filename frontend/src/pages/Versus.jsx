@@ -282,7 +282,7 @@ const Versus = () => {
                             <div className="bg-cream border-4 border-ink shadow-[10px_10px_0px_#FF3B30] p-4 sm:p-6 max-w-2xl w-full" onClick={(e) => e.stopPropagation()}>
                                 <div className="flex justify-between items-center mb-3">
                                     <h3 className="font-heading text-xl sm:text-2xl uppercase">Choisis ton coin {pickerOpen === 'left' ? '🔴' : '🔵'}</h3>
-                                    <button onClick={() => setPickerOpen(null)} className="bg-tomato text-white border-2 border-ink font-heading text-lg w-9 h-9 shadow-[3px_3px_0px_#0A0A0A]">✕</button>
+                                    <button onClick={() => setPickerOpen(null)} data-testid="fighter-picker-close-btn" className="bg-tomato text-white border-2 border-ink font-heading text-lg w-9 h-9 shadow-[3px_3px_0px_#0A0A0A]">✕</button>
                                 </div>
                                 <SortBar mode={pickerSort} onChange={setPickerSort} prefix="versus" />
                                 {pickerList.length === 0 && (
@@ -301,7 +301,7 @@ const Versus = () => {
                                             <div className="font-heading text-[10px] sm:text-xs uppercase text-center leading-none">{op.name}</div>
                                             <DifficultyBar op={op} compact />
                                             <div className="font-body text-[9px] font-bold opacity-80 leading-tight">❤️{op.hp + (op.shieldHp || 0)} · 🎯{Math.round(op.dodgeChance * 100)}%</div>
-                                            <div className="font-body text-[9px] font-bold leading-tight" data-testid={`fighter-option-stats-${op.id}`}>🏆 {versusWins[op.id] || 0} vict. · 👋 {op.kills}</div>
+                                            <div className="font-body text-[9px] font-bold leading-tight flex flex-wrap justify-center gap-x-1.5" data-testid={`fighter-option-stats-${op.id}`}><span className="whitespace-nowrap">🏆 {versusWins[op.id] || 0} vict.</span><span className="whitespace-nowrap">👋 {op.kills}</span></div>
                                         </button>
                                     ))}
                                 </div>

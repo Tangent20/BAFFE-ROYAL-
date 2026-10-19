@@ -305,3 +305,16 @@ Structure claire par § (sections numérotées) :
 - Modifiés : `/lib/skins.js` (5 armes + score parsing), `/pages/Home.jsx` (3 mounts)
 
 **Testé** : Screenshot iPhone 390px confirme Roue + Escalade widget visibles avec palier "Mode Normal" affiché + barre de progression. Lint clean sur lib/idle.js, lib/escalade.js, EscaladeWidget.jsx.
+
+## V22 — Roster & Tableau de chasse + Défouloir du soir (Juin 2026)
+- ✅ `/lib/kills.js` : kills par perso (localStorage `baffe_kills_v1` {counts,last}), difficulté (HP effectifs → Facile/Moyen/Costaud/Boss/Divin), titres débiles par palier (1/5/15/30/60/100/250), tris, cible du jour (date locale)
+- ✅ Game.jsx : `recordKill` à chaque K.O. ; `/game?start=<id>` démarre contre ce perso puis enchaîne (aide 1ère partie appliquée au perso choisi)
+- ✅ Roster refait (`/components/roster/*`) : RagePicker « Qui t'a énervé aujourd'hui ? » (patron→Papa, réunion→IA, déj volé→Yaourt, métro→Pigeon, PC→Boomer, courses→Caissier, famille→Maman, tout→Mamie-Dieu) + bandeau soirée (17h-3h) ; Tableau de chasse X/16 + total K.O. ; Cible du jour ; Podium Top 3 ; barre de tri sticky (Ordre, Difficulté, +HP, Esquive, +baffés, Jamais baffés) ; cartes avec Round, difficulté, « Baffé X fois », titre + progression vers le suivant, bouton « Baffer ce perso »
+- ✅ Versus picker : barre de tri + difficulté + HP/ESQ + victoires versus + kills
+- Testé : testing agent iteration_4 (95% → corrections mobile appliquées et vérifiées par screenshot)
+
+## Backlog
+- P1 : Multi-langue FR/EN
+- P1 : Récompense pour cible du jour / série de jours de défoulement
+- P2 : Capacitor (Play Store/App Store), leaderboard serveur
+- P3 : Refactor Game.jsx

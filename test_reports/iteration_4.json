@@ -1,0 +1,30 @@
+{
+  "summary": "Frontend-only test of new Roster (rage picker, hunt status, daily target, kill podium, sort bar, roster cards w/ kill titles + difficulty bar, BAFFER CE PERSO), kill recording in /game, and Versus picker sorting/stats. Desktop 1920x1080 + mobile 390x844. All requested features work functionally; zero JS pageerrors. One mobile layout issue in rage-result (MAMIE-DIEU), plus minor polish items.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "/roster mobile 390px - rage-result (choix 'TOUT. Absolument tout.' -> MAMIE-DIEU)", "issues": ["L'emoji de MAMIE-DIEU fait 2 caractères (👵🌟) en text-5xl et prend ~130px, en plus du bouton 'DÉFOULE-TOI' shrink-0 : la colonne texte se réduit à ~70px, donc la phrase « Journée apocalyptique ? Il te faut un adversaire... » se coupe à chaque mot (une douzaine de lignes) et le nom passe sur 2 lignes 'MAMIE-/DIEU'. Correction : sur mobile, passer le bouton sous le texte (flex-wrap ou flex-col sm:flex-row, bouton w-full) et/ou réduire l'emoji (text-4xl). Les autres cibles (1 seul emoji) sont serrées aussi mais lisibles."]},
+      {"screen": "/versus fighter-picker (desktop + mobile)", "issues": ["La ligne fighter-option-stats-{id} '🏆 N vict. · 👋 N' passe à la ligne : le nombre de kills se retrouve seul en dessous (ex. '👋' puis '16'). Ajouter whitespace-nowrap ou raccourcir.", "Le bouton ✕ de fermeture du picker n'a pas de data-testid."]},
+      {"screen": "/roster + /versus sort bar mobile", "issues": ["Barre de tri scrollable horizontalement (574px de contenu pour 366px) : '+ baffés' et 'Jamais baffés' sont cachés hors écran sans indicateur visuel (pas de dégradé/flèche). Mineur."]}
+    ]
+  },
+  "test_report_links": [],
+  "action_items": [
+    "Corriger la mise en page mobile de rage-result (RagePicker.jsx ~ligne 50) : bouton sous le texte sur mobile / emoji plus petit",
+    "Ajouter whitespace-nowrap à fighter-option-stats-{id} (Versus.jsx ligne 304) et un data-testid au bouton ✕ du picker (ligne 285)",
+    "Optionnel : indicateur de scroll sur la barre de tri mobile"
+  ],
+  "critical_code_review_comments": [
+    "kills.js today() utilise toISOString (date UTC) alors que l'UI dit « Nouvelle cible demain à minuit » et que isEvening() utilise l'heure locale -> en France la cible du jour change à 1h/2h du matin et kills.last est en date UTC. Utiliser la date locale (ex. toLocaleDateString('sv-SE')).",
+    "Game.jsx : l'aide 'premier jeu' (HP x0.5) s'applique seulement à l'index 0 ; avec ?start=<id> un nouveau joueur affronte l'adversaire choisi sans aide. À décider côté produit.",
+    "Game.jsx ligne 39 : pickedIdx est cherché dans OPPONENTS mais appliqué à rosterRef (baseRoster modifié) – ok tant que l'ordre est identique, à garder en tête."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "N/A", "frontend": "95%"},
+  "seed_data_creation": "localStorage only: baffe_kills_v1={counts:{papa:7,maman:3,mamie_ninja:16}}, baffe_versus_wins={papa:2}, baffe_cookie_consent=accepted",
+  "retest_needed": false,
+  "should_main_agent_self_test": true,
+  "context_for_next_testing_agent": "Verified: all 8 rage-option-* -> correct rage-target-name; rage-fight-btn -> /game?start=yaourt_voleur and opponent-name=YAOURT VOLEUR; daily-target-btn -> /game?start=baguette_sensei (date-seeded); hunt-count 0/16 empty, 3/16 & 26 K.O. seeded; kill-podium ranks 1/2/3 = MAMIE NINJA/PAPA/MAMAN; sorts: difficulty first=yaourt_voleur last=mamie_dieu, hp first=mamie_dieu, dodge first=mamie_dieu, most first=mamie_ninja,papa,maman, never -> 13 COMBATTANTS; sort bar sticky (y=12 after scroll). Kill-block texts e.g. 'BAFFÉ 7 FOIS | Joue toute rouge | Encore 8 baffes → « Traumatisé à vie »'. Real KO of yaourt_voleur via mouse down 700ms/up loop (~10-12 slaps) increments baffe_kills_v1 by exactly 1, next opponent becomes IA TRAUMATISÉE (~6s after KO), roster shows BAFFÉ 1 FOIS. ?start=bogus falls back to MAMIE NINJA. versus-fight-btn is constantly animated: click with force=True. Versus picker sort + stats ('🏆 2 vict. · 👋 7') + select + FIGHT -> versus-result OK. No horizontal overflow on mobile."
+}

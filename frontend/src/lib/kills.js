@@ -2,7 +2,7 @@
 import { OPPONENTS } from "@/lib/gameData";
 
 const KEY = 'baffe_kills_v1';
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => new Date().toLocaleDateString('sv-SE');
 
 export const loadKills = () => {
     try {

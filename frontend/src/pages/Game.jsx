@@ -31,13 +31,13 @@ const Game = () => {
     const baseRoster = modifier ? applyModifierToOpponents(modifier) : OPPONENTS;
     const profileForRoster = loadProfile();
     const isFirstGameInit = profileForRoster.games_played === 0 && !isDaily;
-    const rosterRef = useRef(
-        isFirstGameInit
-            ? baseRoster.map((op, i) => i === 0 ? { ...op, hp: Math.round(op.hp * 0.5), dodgeChance: op.dodgeChance * 0.3 } : op)
-            : baseRoster
-    );
     const pickedIdx = OPPONENTS.findIndex((o) => o.id === params.get('start'));
     const startIdx = modifier?.stat?.startOpponent ?? Math.max(0, pickedIdx);
+    const rosterRef = useRef(
+        isFirstGameInit
+            ? baseRoster.map((op, i) => i === startIdx ? { ...op, hp: Math.round(op.hp * 0.5), dodgeChance: op.dodgeChance * 0.3 } : op)
+            : baseRoster
+    );
 
     const [gameState, setGameState] = useState(GAME_STATES.COUNTDOWN);
     const [countdown, setCountdown] = useState(3);

@@ -47,11 +47,11 @@ export const RagePicker = ({ onFight }) => {
                         initial={{ scale: 0.8, opacity: 0, rotate: -3 }}
                         animate={{ scale: 1, opacity: 1, rotate: 0 }}
                         exit={{ opacity: 0 }}
-                        className="mt-3 bg-ink border-[3px] border-acid p-3 flex items-center gap-3"
+                        className="mt-3 bg-ink border-[3px] border-acid p-3 flex flex-wrap sm:flex-nowrap items-center gap-3"
                         data-testid="rage-result"
                     >
-                        <div className="text-5xl animate-wobble shrink-0" aria-hidden="true">{target.emoji}</div>
-                        <div className="flex-1 min-w-0">
+                        <div className="text-4xl sm:text-5xl animate-wobble shrink-0" aria-hidden="true">{target.emoji}</div>
+                        <div className="flex-1 min-w-[150px]">
                             <p className="font-heading uppercase text-[10px] tracking-widest text-acid">Victime recommandée</p>
                             <p className="font-heading uppercase text-lg leading-none" data-testid="rage-target-name">{target.name}</p>
                             <p className="font-body text-xs font-bold mt-1 opacity-90">{rage.line}</p>
@@ -59,7 +59,7 @@ export const RagePicker = ({ onFight }) => {
                         <button
                             onClick={() => onFight(target.id)}
                             data-testid="rage-fight-btn"
-                            className="shrink-0 bg-acid text-ink border-[3px] border-white font-heading uppercase text-sm px-3 py-2 shadow-[3px_3px_0px_#FF3B30] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-transform duration-75"
+                            className="w-full sm:w-auto shrink-0 bg-acid text-ink border-[3px] border-white font-heading uppercase text-sm px-3 py-2 shadow-[3px_3px_0px_#FF3B30] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] transition-transform duration-75"
                         >
                             💢 Défoule-toi
                         </button>
