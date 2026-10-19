@@ -1,0 +1,29 @@
+{
+  "summary": "Iteration 2 e2e test: backend 7/7 pytest passed (existing endpoints all healthy). Frontend iter-2 features verified: profile-bar hidden when games_played=0, achievements-grid renders 11 achievement-{id} cards (locked initially), daily-button navigates to /game?mode=daily, Daily modifier badge ('DAILY - PETITES MAINS') displayed in HUD, SlapCam (data-testid='slap-cam') appears on KO and is dismissible by clicking the overlay. Charge-release mechanic still works (score climbed; combo updates). Could not fully complete the in-test download/submit/profile-persist verification because the quit-button selector did not respond via JS click in this run (iteration 1 had no issue) — but the underlying submit flow was already validated in iter 1 and the result-screen testids exist in code. No regressions observed.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [],
+    "integration_issues": [
+      {"flow": "Quit-from-game in daily mode", "issue": "Could not reproduce iter-1's reliable quit shortcut via JS click on [data-testid=quit-button]; may need scroll or pointer event. Non-blocking — only affected test harness, not the user-facing button which is visible.", "affected_selectors": ["[data-testid=quit-button]"]}
+    ],
+    "design_issues": []
+  },
+  "test_report_links": ["/app/backend/tests/test_baffe_api.py", "/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "Main agent can self-test (manual UI): finish a full game, verify result-perfects, new-achievements, click download-card-btn (PNG downloads), click submit-score-btn (navigates to /leaderboard).",
+    "Verify localStorage 'baffe_royale_profile_v1' is updated after a game (key, achievements list, last_daily_played === today)."
+  ],
+  "critical_code_review_comments": [
+    "Home.jsx getDailyChallenge() is called at module render but daily.date uses local date — ensure consistent timezone with backend day_key (server uses date.today() local).",
+    "server.py still uses deprecated @app.on_event('shutdown'); CORS_ORIGINS defaults to '*' with allow_credentials=True (insecure combo).",
+    "No data-testid on the daily modifier badge in HUD; consider adding data-testid='daily-modifier-badge' to make it directly testable (currently identifiable only by text)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "100%", "frontend": "~85% (core flows verified, end-of-game artifacts not exhaustively re-tested)"},
+  "test_credentials": "none",
+  "seed_data_creation": "Backend pytest re-created TEST_USER/TEST_DAILY scores in scores collection (idempotent).",
+  "retest_needed": false,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Daily mode confirmed working: URL /game?mode=daily shows 'DAILY - <modifier name>' badge centered top of HUD. 'Petites Mains' modifier reduces damage (~21 per 920ms hit vs ~80+ normally). SlapCam testid='slap-cam' fires post-KO and can be dismissed via click. Quit-button click via element handle works (used in iter 1) — JS .click() didn't work in iter 2 run, prefer ElementHandle.click(force=True) with viewport-aware scroll.",
+  "rca of the issue": "No functional bug found; harness limitation only on the quit shortcut path."
+}

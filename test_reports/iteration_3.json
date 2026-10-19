@@ -1,0 +1,42 @@
+{
+  "summary": "Exhaustive frontend audit of BAFFE ROYALE V19.1 across 3 viewports (iPhone 390x844, iPad 768x1024, Desktop 1920x1080). All 5 pages render correctly (/, /roster, /collection, /versus, /zone-debile). BreakingTicker present on all pages with proper overflow:hidden. ScrollToTop verified. Konami code triggers MODE TARPIN with hue-rotate(280deg) on <html>. Game flow validates (countdown -> charge/release -> result screen with DING DING DING + PARTAGER MON HUMILIATION + REJOUER + DÉFIER). 15 roster characters and 16 achievements/trophies confirmed. No horizontal body scroll on any viewport. Zero JS pageerrors / console errors. Critical issue: cookie banner overlays the BAFFE-MOI slap button on mobile Game page (and result-screen submit area) when the user hasn't accepted cookies BEFORE clicking play — element-at-point check confirms cookie banner text is on top of slap-button center, blocking gameplay.",
+  "backend_issues": {"critical": [], "minor": []},
+  "frontend_issues": {
+    "ui_bugs": [
+      {"component": "CookieBanner / Game.jsx", "issue": "On mobile (390px), when the cookie banner has not been dismissed and the user clicks JOUER MAINTENANT, the cookie banner stays fixed at the bottom and completely covers the BAFFE-MOI slap-button (gap from viewport = 80px, banner height ~280px). elementFromPoint on the slap-button center returns the cookie banner <p>, not the slap-button. User cannot play until cookies dismissed.", "selector": "[data-testid=\"cookie-banner\"] vs [data-testid=\"slap-button\"]", "priority": "HIGH"},
+      {"component": "CookieBanner on /game ResultScreen", "issue": "Same overlay also covers the bottom area of ResultScreen on mobile (submit-score-btn / share-defeat-twitter / challenge-friend-btn / replay-btn / home-btn region) when cookies haven't been accepted.", "selector": "[data-testid=\"cookie-banner\"]", "priority": "HIGH"},
+      {"component": "Home.jsx CookieBanner (initial render)", "issue": "ACCEPTER / REFUSER buttons in the FIRST cookie banner instance (Home) have NO data-testid (the test could only find them by text). However on the /game ResultScreen the cookie banner exposes data-testid='cookie-banner-accept' / 'cookie-banner-refuse'. Inconsistent testids between two CookieBanner instances suggests possibly TWO CookieBanner components mounted (potential duplicate).", "selector": "button:has-text(\"ACCEPTER\")", "priority": "MEDIUM"},
+      {"component": "Game.jsx quit button", "issue": "data-testid is 'quit-btn' (not 'quit-button' as suggested in the review spec). Functional but inconsistent with naming convention used elsewhere (back-btn, play-button).", "selector": "[data-testid=\"quit-btn\"]", "priority": "LOW"}
+    ],
+    "integration_issues": [],
+    "design_issues": [
+      {"screen": "Roster mobile", "issues": ["All 15 character cards render correctly with stats, bio, taunt — no truncation observed."]},
+      {"screen": "Collection mobile", "issues": ["LOOTS/SKINS/TROPHÉES tabs all switch correctly. MAINS DE FEU shows black-on-yellow good contrast, TIR FUSIL shows black-on-orange good contrast — readability OK."]},
+      {"screen": "Versus mobile", "issues": ["CHOISIS TES DEUX ABRUTIS title displays correctly (h2 below VERSUS h1). All elements visible — no overflow."]},
+      {"screen": "ZoneDebile mobile", "issues": ["100% ABSURDITÉ title visible, compteur, tweet, rumeur, fait inutile, prophétie all render — humor intact (le site reste stupide)."]},
+      {"screen": "Result screen mobile", "issues": ["Grade card shows large letter (e.g., 'D' with 💩 corner emoji) but no literal 'Grade' label text — relies on visual hierarchy. Acceptable design but could be ambiguous to test."]}
+    ]
+  },
+  "test_report_links": ["/app/test_reports/pytest/pytest_results.xml"],
+  "action_items": [
+    "FIX HIGH: Either hide the CookieBanner on /game (and on ResultScreen) until the user has interacted with it, OR auto-dismiss/auto-collapse it once gameplay starts, OR lower its z-index so the slap-button (and result CTAs) sit above it. Currently on mobile (390px) the banner blocks the BAFFE-MOI button entirely.",
+    "FIX MEDIUM: Check if CookieBanner is mounted twice (once globally in App.js and once inside ResultScreen/Game). Only one instance should exist and it should expose consistent data-testid='cookie-banner-accept' / 'cookie-banner-refuse' attributes.",
+    "FIX LOW: Rename data-testid='quit-btn' to 'quit-button' for consistency with review spec, OR update doc to reference 'quit-btn'.",
+    "OPTIONAL: Add data-testid='daily-modifier-badge' (carried over from iteration 2)."
+  ],
+  "critical_code_review_comments": [
+    "CookieBanner z-index/positioning: the banner is rendered with fixed positioning over content on all routes. On /game the slap-button is the primary interactive element near the bottom — these two must never collide. Suggest adding a CSS rule or conditional render to hide CookieBanner while location.pathname === '/game' (or while !cookieAccepted, dim the play button to force user to accept first).",
+    "Potential double-mount of CookieBanner: on Home initial render the ACCEPTER button has no testid, but on /game ResultScreen the same banner exposes data-testid='cookie-banner-accept'. Indicates either (a) two CookieBanner components in the tree, or (b) the testid is conditionally applied. Both cases warrant review.",
+    "Konami detection works via document keydown listener (case-insensitive on b/a). MODE TARPIN message + hue-rotate(280deg) saturate(1.4) applied to <html> element — clean implementation. Confirmed 8s duration not measured but visual effect activates.",
+    "BreakingTicker uses CSS marquee animation; container has overflow-x:hidden so no body scroll. Animation duration appropriate, content readable.",
+    "ScrollToTop component works correctly — scrollY resets to 0 on route change verified (Roster scrollY=1000 -> Home scrollY=0)."
+  ],
+  "updated_files": [],
+  "success_rate": {"backend": "not tested (frontend-only request)", "frontend": "~88% — all rendering & navigation correct; 2 HIGH overlay bugs related to CookieBanner blocking interactions"},
+  "test_credentials": "none required",
+  "seed_data_creation": "none",
+  "retest_needed": true,
+  "main_agent_can_self_test": true,
+  "context_for_next_testing_agent": "Cookie banner z-index/overlay issue is the only critical blocker. To reproduce: set viewport 390x844, navigate to /, do NOT click ACCEPTER, click data-testid='play-button', wait 5s for countdown, then run document.elementFromPoint(slap.center.x, slap.center.y) — returns the cookie <p>, not the slap-button. Same situation on /game ResultScreen. Available testids on home: skip-link, home-page, toggle-voice-btn, nav-leaderboard-btn, breaking-ticker, game-title, play-button, daily-button, practice-button, versus-button, lottery-wheel, lottery-spin-btn, escalade-widget, portal-roster, portal-collection, portal-debile, play-button-bottom, site-footer, compliance-panel. On game: game-score, game-combo, quit-btn (NOT quit-button), slap-button. On result-screen: result-screen, grade, result-score, result-kos, result-combo, result-perfects, rank-display, pseudo-input, submit-score-btn, download-card-btn, share-defeat-twitter, challenge-friend-btn, replay-btn, home-btn, cookie-banner, cookie-banner-accept, cookie-banner-refuse. Roster testids: roster-card-{id}. Konami code (↑↑↓↓←→←→ba) works on desktop and triggers MODE TARPIN.",
+  "rca of the issue": "CookieBanner is rendered as a fixed-positioned element at the bottom of viewport with high z-index, persisting across all routes (including /game). The slap-button on Game page is positioned at bottom: 80px (5rem / safe-area-inset-bottom + 1rem) which sits within the cookie banner's vertical footprint (~280px). Without an early-exit/hide for /game route, the banner intercepts pointer events on the slap-button. Mitigation options: (1) hide CookieBanner during gameplay routes, (2) auto-accept (default essential) and move banner to a non-blocking toast, (3) raise slap-button z-index above banner AND adjust banner to not intercept clicks outside its actual area."
+}

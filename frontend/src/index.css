@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Space+Mono:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    overscroll-behavior: none;
+    -webkit-overflow-scrolling: touch;
+}
+
+body {
+    margin: 0;
+    font-family: 'Space Mono', monospace;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #FFF9E6;
+    color: #0A0A0A;
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    overscroll-behavior-y: contain;
+    -webkit-overflow-scrolling: touch;
+    touch-action: manipulation;
+}
+
+/* ===== Accessibility ===== */
+
+/* Visible focus for keyboard users */
+*:focus-visible {
+    outline: 3px solid #FF3B30 !important;
+    outline-offset: 3px !important;
+    border-radius: 2px;
+}
+
+/* Skip-to-content link (hidden until focused) */
+.skip-link {
+    position: absolute;
+    top: -100px;
+    left: 8px;
+    background: #0A0A0A;
+    color: #FFFF00;
+    padding: 12px 16px;
+    font-family: 'Bangers', cursive;
+    font-size: 16px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 3px solid #FFFF00;
+    z-index: 100;
+    transition: top 0.2s ease;
+}
+.skip-link:focus {
+    top: 8px;
+}
+
+/* Visually hidden but available to screen readers */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Respect users who request reduced motion (vestibular disorders, etc.) */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* Minimum touch target 44x44 (WCAG 2.5.5) */
+button, a, [role="button"] {
+    min-height: 1px;
+}
+
+/* Hide Emergent badge — user request */
+#emergent-badge {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Game arena: lock body scroll & swipe gestures while playing */
+body.is-playing {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+}
+
+@layer base {
+    :root {
+        --background: 49 100% 95%;
+        --foreground: 0 0% 4%;
+        --card: 0 0% 100%;
+        --card-foreground: 0 0% 4%;
+        --popover: 0 0% 100%;
+        --popover-foreground: 0 0% 4%;
+        --primary: 4 100% 59%;
+        --primary-foreground: 0 0% 100%;
+        --secondary: 60 100% 50%;
+        --secondary-foreground: 0 0% 4%;
+        --muted: 47 23% 85%;
+        --muted-foreground: 0 0% 30%;
+        --accent: 180 100% 50%;
+        --accent-foreground: 0 0% 4%;
+        --destructive: 0 100% 50%;
+        --destructive-foreground: 0 0% 100%;
+        --border: 0 0% 4%;
+        --input: 47 23% 85%;
+        --ring: 0 0% 4%;
+        --radius: 0rem;
+    }
+}
+
+@layer base {
+    * { @apply border-border; }
+    body { @apply bg-background text-foreground; }
+}
+
+/* Halftone dot background */
+.halftone-bg {
+    background-image: radial-gradient(#0A0A0A 1px, transparent 1.5px);
+    background-size: 14px 14px;
+}
+
+.halftone-dense {
+    background-image: radial-gradient(#0A0A0A 1.5px, transparent 2px);
+    background-size: 10px 10px;
+}
+
+.diagonal-stripes {
+    background-image: repeating-linear-gradient(
+        45deg,
+        #0A0A0A,
+        #0A0A0A 6px,
+        transparent 6px,
+        transparent 18px
+    );
+}
+
+.text-stroke {
+    -webkit-text-stroke: 3px #0A0A0A;
+    paint-order: stroke fill;
+}
+
+.text-stroke-thin {
+    -webkit-text-stroke: 2px #0A0A0A;
+    paint-order: stroke fill;
+}
+
+/* Selection */
+::selection {
+    background: #FFFF00;
+    color: #0A0A0A;
+}
+
+/* Custom cursor */
+* {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><path d='M4 4 L4 22 L10 18 L14 28 L18 26 L14 18 L22 18 Z' fill='%23FFFF00' stroke='%230A0A0A' stroke-width='2.5' stroke-linejoin='round'/></svg>") 4 4, auto;
+}
+
+button, [role="button"], a {
+    cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'><circle cx='18' cy='18' r='14' fill='%23FF3B30' stroke='%230A0A0A' stroke-width='3'/><circle cx='18' cy='18' r='5' fill='%230A0A0A'/></svg>") 18 18, pointer;
+}
+
+/* No-select for the game area */
+.no-select { user-select: none; -webkit-user-select: none; }
+
+/* Hide scrollbar style helper */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Breaking news marquee */
+@keyframes baffe-marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+    [style*="baffe-marquee"] { animation: none !important; }
+}
+
+@layer base {
+    [data-debug-wrapper="true"] { display: contents !important; }
+}

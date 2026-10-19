@@ -1,0 +1,83 @@
+{
+  "theme": "Acid Risograph Comic",
+  "archetype": "Archetype 6 (Vibrant Play) + Archetype 4 (Swiss/Brutalist)",
+  "description": "A highly chaotic, French-flavored absurd comedy game UI. The aesthetic combines neo-brutalist web design, risograph print textures, and comic-book pop art. No smooth gradients, no soft shadows. Everything is loud, raw, and tactile.",
+  "colors": {
+    "background": "#FFF9E6",
+    "foreground": "#0A0A0A",
+    "primary": "#FF3B30",
+    "secondary": "#FFFF00",
+    "accent": "#00FFFF",
+    "muted": "#E5DFCC",
+    "border": "#0A0A0A",
+    "surface": "#FFFFFF",
+    "success": "#39FF14",
+    "warning": "#FF8C00",
+    "error": "#FF0000"
+  },
+  "typography": {
+    "heading_font": "Bangers, system-ui, sans-serif",
+    "body_font": "Space Mono, monospace",
+    "heading_styles": {
+      "h1": "text-6xl sm:text-7xl lg:text-9xl tracking-tighter uppercase font-heading text-[#0A0A0A] drop-shadow-[6px_6px_0px_#FF3B30]",
+      "h2": "text-4xl sm:text-5xl lg:text-6xl tracking-tight uppercase font-heading text-[#0A0A0A]",
+      "h3": "text-2xl sm:text-3xl uppercase font-heading text-[#0A0A0A]"
+    },
+    "body_styles": {
+      "base": "text-base font-body text-[#0A0A0A]",
+      "small": "text-sm font-bold uppercase tracking-widest text-[#0A0A0A]",
+      "large": "text-lg font-bold font-body text-[#0A0A0A]"
+    }
+  },
+  "layout_and_spacing": {
+    "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+    "spacing_scale": "Use generous padding: p-4, p-6, p-8. Elements should feel chunky.",
+    "border_radius": "rounded-none or rounded-xl (mix sharp brutalism with comic soft shapes)",
+    "borders": "border-4 border-[#0A0A0A]",
+    "shadows": {
+      "brutalist": "shadow-[8px_8px_0px_#0A0A0A]",
+      "brutalist_hover": "hover:shadow-[4px_4px_0px_#0A0A0A] hover:translate-x-[4px] hover:translate-y-[4px]",
+      "brutalist_active": "active:shadow-none active:translate-x-[8px] active:translate-y-[8px]"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-white border-4 border-[#0A0A0A] font-heading uppercase text-3xl px-8 py-4 shadow-[8px_8px_0px_#0A0A0A] hover:shadow-[4px_4px_0px_#0A0A0A] hover:translate-x-[4px] hover:translate-y-[4px] transition-all duration-100",
+      "secondary": "bg-secondary text-[#0A0A0A] border-4 border-[#0A0A0A] font-heading uppercase text-2xl px-6 py-3 shadow-[6px_6px_0px_#0A0A0A] hover:shadow-[2px_2px_0px_#0A0A0A] hover:translate-x-[4px] hover:translate-y-[4px] transition-all duration-100"
+    },
+    "cards": "bg-surface border-4 border-[#0A0A0A] p-6 shadow-[8px_8px_0px_#0A0A0A] relative overflow-hidden",
+    "hud": "fixed top-0 w-full p-4 flex justify-between items-center pointer-events-none z-50",
+    "health_bar": "h-8 border-4 border-[#0A0A0A] bg-white relative overflow-hidden",
+    "health_fill": "h-full bg-primary transition-all duration-300 ease-out",
+    "charge_bar": "h-12 border-4 border-[#0A0A0A] bg-white rounded-full overflow-hidden w-full max-w-md mx-auto relative",
+    "charge_fill": "h-full bg-secondary origin-left transition-all"
+  },
+  "motion_and_juice": {
+    "screen_shake": "animate-[shake_0.3s_ease-in-out]",
+    "wobble": "animate-[wobble_2s_infinite_linear]",
+    "slap_impact": "scale-150 rotate-12 transition-transform duration-75",
+    "floating": "animate-[float_3s_ease-in-out_infinite]",
+    "transitions": "Use fast, snappy transitions. No slow easing. 75ms or 150ms max.",
+    "particles": "Burst of comic action stars and 'BAM!' or 'PAF!' text elements emerging on impact using absolute positioning or framer-motion"
+  },
+  "media_and_assets": {
+    "halftone_pattern_url": "https://images.unsplash.com/photo-1522151656182-013606406818?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1ODR8MHwxfHNlYXJjaHwyfHxoYWxmdG9uZSUyMGRvdCUyMHRleHR1cmV8ZW58MHx8fHwxNzgwNTI3MDQzfDA&ixlib=rb-4.1.0&q=85",
+    "comic_background_url": "https://images.pexels.com/photos/6654177/pexels-photo-6654177.jpeg",
+    "characters": {
+      "baguette_sensei": "https://images.unsplash.com/photo-1599819055803-717bba43890f?crop=entropy&cs=srgb&fm=jpg",
+      "pigeon_avocat": "https://images.unsplash.com/photo-1641144355850-e7991d050bdc?crop=entropy&cs=srgb&fm=jpg",
+      "mamie_ninja": "https://images.pexels.com/photos/8727369/pexels-photo-8727369.jpeg"
+    }
+  },
+  "instructions_to_main_agent": [
+    "Use standard HTML/Tailwind for the heavy custom UI. Avoid Shadcn for the main game arena as it requires high-customization brutalist designs. Use Shadcn only for generic settings modals or forms.",
+    "Implement Web Audio API for synthetic sound effects (slap charge, hit, fail, cheers).",
+    "Use Framer Motion to handle the charge-and-release mechanic, combo multipliers popping up, and the screen shake.",
+    "Extend tailwind.config.js with custom keyframes for 'shake' (rapid pixel translations), 'wobble', and 'float'. Use 'Bangers' and 'Space Mono' for fonts.",
+    "Add a halftone dot overlay using mix-blend-multiply or opacity masks on backgrounds to enforce the risograph aesthetic. Keep border radius blocky or completely sharp.",
+    "Use React canvas or simple absolute positioned DOM elements for the random chaos items falling from the top.",
+    "Test IDs are MANDATORY on all interactive elements (e.g., data-testid='slap-button', data-testid='charge-meter').",
+    "Keep files as .js or .jsx, NO TypeScript.",
+    "Use pure HTML Canvas or framer-motion particles for the heavy juice impacts ('PAF!', 'BING!', stars, screen flashes)."
+  ]
+}
