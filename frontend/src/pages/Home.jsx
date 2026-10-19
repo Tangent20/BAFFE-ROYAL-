@@ -270,7 +270,7 @@ const Home = () => {
                     </div>
                     <div className="grid grid-cols-1 gap-3 sm:gap-4">
                         <Portal to="/roster" testId="portal-roster"
-                            icon="🥊" title="Le Roster" subtitle="15 tarés · bio · HP · taunts cultes"
+                            icon="🥊" title="Le Roster" subtitle="16 tarés · tri · tableau de chasse"
                             color="#FF8C00" tilt={-1} />
                         <Portal to="/collection" testId="portal-collection"
                             icon="🎁" title="Ma Collection" subtitle="🎰 Loots · 👋 Skins · 🎖️ Trophées"

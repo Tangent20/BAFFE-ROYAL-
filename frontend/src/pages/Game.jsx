@@ -11,6 +11,7 @@ import { generateShareCard, downloadShareCard } from "@/lib/shareCard";
 import { applyBoostToOpponent } from "@/lib/loot";
 import LootMachine from "@/components/LootMachine";
 import { getActiveSkin } from "@/lib/skins";
+import { recordKill } from "@/lib/kills";
 import { toast } from "sonner";
 
 const GAME_STATES = { COUNTDOWN: 'countdown', PLAYING: 'playing', SLAP_CAM: 'slap_cam', LOOT: 'loot', RESULT: 'result' };
@@ -35,7 +36,8 @@ const Game = () => {
             ? baseRoster.map((op, i) => i === 0 ? { ...op, hp: Math.round(op.hp * 0.5), dodgeChance: op.dodgeChance * 0.3 } : op)
             : baseRoster
     );
-    const startIdx = modifier?.stat?.startOpponent ?? 0;
+    const pickedIdx = OPPONENTS.findIndex((o) => o.id === params.get('start'));
+    const startIdx = modifier?.stat?.startOpponent ?? Math.max(0, pickedIdx);
 
     const [gameState, setGameState] = useState(GAME_STATES.COUNTDOWN);
     const [countdown, setCountdown] = useState(3);
@@ -363,6 +365,7 @@ const Game = () => {
         sfx.ko();
         vibrate([60, 50, 100, 50, 60]);
         setKos((k) => k + 1);
+        recordKill(opponentRaw.id);
         setScore((s) => s + Math.round(1000 * scoreMult));
 
         // Voice-over for KO

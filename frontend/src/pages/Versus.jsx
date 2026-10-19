@@ -4,6 +4,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { OPPONENTS } from "@/lib/gameData";
 import { sfx, resumeAudio, voice, vibrate } from "@/lib/audio";
 import BreakingTicker from "@/components/BreakingTicker";
+import { loadKills, sortOpponents } from "@/lib/kills";
+import { SortBar } from "@/components/roster/SortBar";
+import { DifficultyBar } from "@/components/roster/DifficultyBar";
 
 // ===== Versus stupid commentary pool =====
 const COMMENTARY = {
@@ -94,6 +97,9 @@ const Versus = () => {
     const [winner, setWinner] = useState(null);
     const [hitFx, setHitFx] = useState({ side: null, intensity: 0 });
     const tickRef = useRef(null);
+    const [pickerSort, setPickerSort] = useState('order');
+    const [versusWins, setVersusWins] = useState({});
+    const pickerList = sortOpponents(pickerSort, loadKills().counts);
 
     const left = OPPONENTS.find((o) => o.id === leftId);
     const right = OPPONENTS.find((o) => o.id === rightId);
@@ -226,7 +232,10 @@ const Versus = () => {
         setTimeout(() => startFight(), 200);
     };
 
-    const handlePick = (side) => setPickerOpen(side);
+    const handlePick = (side) => {
+        try { setVersusWins(JSON.parse(localStorage.getItem('baffe_versus_wins') || '{}')); } catch (e) { setVersusWins({}); }
+        setPickerOpen(side);
+    };
     const handleSelectFighter = (id) => {
         if (pickerOpen === 'left') setLeftId(id);
         else if (pickerOpen === 'right') setRightId(id);
@@ -275,17 +284,24 @@ const Versus = () => {
                                     <h3 className="font-heading text-xl sm:text-2xl uppercase">Choisis ton coin {pickerOpen === 'left' ? '🔴' : '🔵'}</h3>
                                     <button onClick={() => setPickerOpen(null)} className="bg-tomato text-white border-2 border-ink font-heading text-lg w-9 h-9 shadow-[3px_3px_0px_#0A0A0A]">✕</button>
                                 </div>
-                                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[60vh] overflow-y-auto">
-                                    {OPPONENTS.map((op) => (
+                                <SortBar mode={pickerSort} onChange={setPickerSort} prefix="versus" />
+                                {pickerList.length === 0 && (
+                                    <p className="font-heading uppercase text-sm text-center py-6" data-testid="versus-picker-empty">Tu as déjà baffé tout le monde. Bravo le psychopathe.</p>
+                                )}
+                                <div className="grid grid-cols-3 sm:grid-cols-5 gap-2 max-h-[55vh] overflow-y-auto mt-2 p-1">
+                                    {pickerList.map((op) => (
                                         <button
                                             key={op.id}
                                             onClick={() => handleSelectFighter(op.id)}
                                             disabled={op.id === (pickerOpen === 'left' ? rightId : leftId)}
                                             data-testid={`fighter-option-${op.id}`}
-                                            className="bg-white border-[3px] border-ink p-2 shadow-[4px_4px_0px_#0A0A0A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_#0A0A0A] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                            className="bg-white border-[3px] border-ink p-2 shadow-[4px_4px_0px_#0A0A0A] active:translate-x-[2px] active:translate-y-[2px] active:shadow-[1px_1px_0px_#0A0A0A] disabled:opacity-30 disabled:cursor-not-allowed transition-all flex flex-col items-center gap-1"
                                         >
                                             <div className="text-4xl text-center">{op.emoji}</div>
-                                            <div className="font-heading text-[10px] sm:text-xs uppercase text-center mt-1 leading-none">{op.name}</div>
+                                            <div className="font-heading text-[10px] sm:text-xs uppercase text-center leading-none">{op.name}</div>
+                                            <DifficultyBar op={op} compact />
+                                            <div className="font-body text-[9px] font-bold opacity-80 leading-tight">❤️{op.hp + (op.shieldHp || 0)} · 🎯{Math.round(op.dodgeChance * 100)}%</div>
+                                            <div className="font-body text-[9px] font-bold leading-tight" data-testid={`fighter-option-stats-${op.id}`}>🏆 {versusWins[op.id] || 0} vict. · 👋 {op.kills}</div>
                                         </button>
                                     ))}
                                 </div>
